@@ -10,6 +10,14 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$USER_HOME$/IdeaProjects/volga-project/eureka-server" />
+        <option name="modules">
+          <set>
+            <option value="$USER_HOME$/IdeaProjects/volga-project/eureka-server" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>

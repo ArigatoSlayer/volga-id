@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="web" url="file://$PROJECT_DIR$/hospital-service" />
+    <file type="web" url="file://$PROJECT_DIR$/authentication-service" />
+    <file type="web" url="file://$PROJECT_DIR$/eureka-server" />
+    <file type="web" url="file://$PROJECT_DIR$/gateway-service" />
     <file type="web" url="file://$PROJECT_DIR$/hospital-service" />
     <file type="web" url="file://$USER_HOME$/IdeaProjects/volga-project/eureka-server" />
   </component>

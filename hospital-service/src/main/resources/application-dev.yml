@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://hospitaldb:5433/hospital
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+  application:
+    name: hospital
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka
+
+openapi:
+  service:
+    title: authentication-doc
+    version: 1.0.0
+    url: http://gateway:8080
+
+springdoc:
+  api-docs:
+    path: api/hospital/v3/api-docs
+  swagger-ui:
+    path: api/hospital/swagger-ui.html
+
+jwt:
+  secret: "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4"
+  token:
+    access:
+      expiration: "86400"
+    refresh:
+      expiration: "604800"

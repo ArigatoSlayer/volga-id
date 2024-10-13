@@ -18,7 +18,7 @@ public class HospitalController {
 
     @GetMapping
     public Page<Hospital> getAllHospitals(@RequestParam("from") int from, @RequestParam("count") int count) {
-        return hospitalService.findAnyHospitals(from, count);
+        return hospitalService.findHospitals(from, count);
     }
 
     @GetMapping("/{id}")
@@ -31,21 +31,29 @@ public class HospitalController {
         return hospitalService.getHospitalRoomsById(id);
     }
 
+    //Admin only
+
     @PostMapping
-    public Hospital createHospital(@RequestBody Hospital hospital) {
-        return hospitalService.save(hospital);
+    public Hospital createHospital(@RequestBody Hospital hospital,
+                                   @RequestHeader(name = "Authorization") String token) {
+        return hospitalService.save(hospital, token);
     }
 
     @PutMapping("/{id}")
-    public Hospital updateHospital(@PathVariable long id, @RequestBody Hospital hospital) {
-        return hospitalService.update(id, hospital);
+    public Hospital updateHospital(@PathVariable long id,
+                                   @RequestBody Hospital hospital,
+                                   @RequestHeader(name = "Authorization") String token) {
+        return hospitalService.update(id, hospital, token);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteHospital(@PathVariable long id) {
-        hospitalService.deleteById(id);
+    public ResponseEntity<String> deleteHospital(@PathVariable long id,
+                                                 @RequestHeader(name = "Authorization") String token) {
+        hospitalService.deleteById(id, token);
+
         return ResponseEntity.ok().body(
                 String.format("Hospital with id %s was deleted", id)
         );
     }
 }
+

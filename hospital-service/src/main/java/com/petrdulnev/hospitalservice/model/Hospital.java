@@ -24,3 +24,4 @@ public class Hospital {
     @ColumnDefault("false")
     private Boolean deleted;
 }
+

@@ -5,9 +5,12 @@
       <module name="com.petrdulnev.eureka-server" target="17" />
       <module name="com.petrdulnev.eureka-server.main" target="17" />
       <module name="com.petrdulnev.eureka-server.test" target="17" />
+      <module name="com.petrdulnev.hospital-service.test" target="17" />
       <module name="com.petrdulnev.hospital.main" target="17" />
       <module name="com.petrdulnev.hospital.test" target="17" />
       <module name="hospital" target="17" />
+      <module name="hospital-service.main" target="17" />
+      <module name="hospital-service.test" target="17" />
       <module name="hospital.main" target="17" />
       <module name="hospital.test" target="17" />
     </bytecodeTargetLevel>

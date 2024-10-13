@@ -5,6 +5,7 @@
     <file type="web" url="file://$PROJECT_DIR$/authentication-service" />
     <file type="web" url="file://$PROJECT_DIR$/eureka-server" />
     <file type="web" url="file://$PROJECT_DIR$/gateway-service" />
+    <file type="web" url="file://$PROJECT_DIR$/hospital" />
     <file type="web" url="file://$PROJECT_DIR$/hospital-service" />
     <file type="web" url="file://$USER_HOME$/IdeaProjects/volga-project/eureka-server" />
   </component>

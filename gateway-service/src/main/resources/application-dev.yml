@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: test
+          uri: lb://hospital
+          predicates:
+            - Path=/api/Hospitals/**
+        - id:
+          uri: lb://authentication
+          predicates:
+            - Path=/api/Authentication/**
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://eureka:8761/eureka/
+
+jwt:
+  secret: "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4"

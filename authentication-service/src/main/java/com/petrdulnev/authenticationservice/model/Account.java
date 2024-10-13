@@ -1,10 +1,8 @@
 package com.petrdulnev.authenticationservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -13,16 +11,20 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "_User")
-public class User {
+@Builder
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String refreshToken;
     @ElementCollection
-    private List<String> authorities;
+    @Enumerated(EnumType.STRING)
+    private List<Role> authorities;
+    @ColumnDefault("false")
+    private Boolean deleted;
 }

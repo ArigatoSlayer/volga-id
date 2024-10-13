@@ -22,6 +22,10 @@ ext {
 }
 
 dependencies {
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-gateway', version: '4.1.5'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 }

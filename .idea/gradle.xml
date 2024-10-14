@@ -21,10 +21,20 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/gateway-service" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/gateway-server" />
+        <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/gateway-service" />
+            <option value="$PROJECT_DIR$/gateway-server" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/history-service" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/history-service" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -34,6 +44,15 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/hospital-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/timetable-service" />
+        <option name="gradleJvm" value="21" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/timetable-service" />
           </set>
         </option>
       </GradleProjectSettings>

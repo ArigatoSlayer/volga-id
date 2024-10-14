@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/authentication-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/authentication-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/hospital-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/hospital-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/hospital-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/hospital-service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/timetable-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/timetable-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/volga-id.iml" filepath="$PROJECT_DIR$/.idea/volga-id.iml" />
     </modules>
   </component>

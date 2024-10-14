@@ -18,6 +18,16 @@ services:
       - POSTGRES_PASSWORD=password
       - PGPORT=5433
 
+  timetabledb:
+    image: postgres:latest
+    ports:
+      - "5434:5434"
+    environment:
+      - POSTGRES_DB=timetable
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - PGPORT=5434
+
   eureka:
     build:
       context: eureka-server/
@@ -45,7 +55,14 @@ services:
     ports:
       - "8081:8081"
     depends_on:
+      - rabbitmq
       - eureka
       - authenticationdb
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672

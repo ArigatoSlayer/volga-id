@@ -12,18 +12,15 @@ spring:
       ddl-auto: create
   application:
     name: authentication
+  rabbitmq:
+    port: 5672
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-#openapi:
-#  service:
-#    title: authentication-doc
-#    version: 1.0.0
-#    url: http://localhost:8080
-#
+
 springdoc:
   api-docs:
     path: /api/authentication/v3/api-docs

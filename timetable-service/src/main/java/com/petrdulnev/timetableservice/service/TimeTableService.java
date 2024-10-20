@@ -4,7 +4,10 @@ import com.petrdulnev.timetableservice.jwt.JwtUtil;
 import com.petrdulnev.timetableservice.model.Appointment;
 import com.petrdulnev.timetableservice.model.Role;
 import com.petrdulnev.timetableservice.model.Timetable;
+import com.petrdulnev.timetableservice.model.dto.RabbitCreateHistory;
+import com.petrdulnev.timetableservice.model.dto.RabbitRequest;
 import com.petrdulnev.timetableservice.model.dto.ResponseTimeAppointment;
+import com.petrdulnev.timetableservice.rabbit.RabbitMQPublisherService;
 import com.petrdulnev.timetableservice.repository.AppointmentsRepository;
 import com.petrdulnev.timetableservice.repository.TimeTableRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +25,38 @@ public class TimeTableService {
     private final TimeTableRepository timeTableRepository;
     private final AppointmentsRepository appointmentsRepository;
     private final JwtUtil jwtUtil;
+    private final RabbitMQPublisherService rabbitService;
 
-    public Timetable saveTimetable(Timetable timeTable, String token) {
+    @Transactional
+    public Timetable saveTimetable(Timetable timetable, String token) {
         isAdminOrManager(token);
+        checkDoctor(timetable.getDoctorId());
+        checkHospitalAndRoom(timetable.getHospitalId(), timetable.getRoom());
 
-        return timeTableRepository.save(createTimeTableWithAppointments(timeTable));
+        return timeTableRepository.save(createTimeTableWithAppointments(timetable));
     }
 
-    public Timetable updateTimetable(Timetable timeTable, long id, String token) {
-        // удалить все брони потом заново генерить
-        return null;
+    @Transactional
+    public Timetable updateTimetable(Timetable timetable, long id, String token) {
+        isAdminOrManager(token);
+        checkDoctor(timetable.getDoctorId());
+        checkHospitalAndRoom(timetable.getHospitalId(), timetable.getRoom());
+
+        Timetable timetableOld = timeTableRepository.findById(id).orElseThrow();
+
+        if (timetable.getFrom() != null) {
+            timetableOld.setFrom(timetable.getFrom());
+        } else if (timetable.getTo() != null) {
+            timetableOld.setTo(timetable.getTo());
+        } else if (timetable.getDoctorId() != null) {
+            timetableOld.setDoctorId(timetable.getDoctorId());
+        } else if (timetable.getRoom() != null) {
+            timetableOld.setRoom(timetable.getRoom());
+        } else if (timetable.getHospitalId() != null) {
+            timetableOld.setHospitalId(timetable.getHospitalId());
+        }
+
+        return timetableOld;
     }
 
     public void deleteTimetable(long id, String token) {
@@ -66,7 +91,7 @@ public class TimeTableService {
         List<Appointment> freeAppointments = new ArrayList<>();
         timetable.getAppointments().forEach(
                 appointment -> {
-                    if (appointment.isFree()) {
+                    if (appointment.getIsFree()) {
                         freeAppointments.add(appointment);
                     }
                 }
@@ -74,18 +99,38 @@ public class TimeTableService {
         return freeAppointments;
     }
 
-    public ResponseTimeAppointment bookingAppointments(Long id) {
+    @Transactional
+    public ResponseTimeAppointment bookingAppointments(Long id, String token) {
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
+
+        Long accountId = rabbitService.sendTokenForGetUserId(token);
+
+        appointment.setIsFree(false);
+        appointment.setUserId(accountId);
+
+        appointment = appointmentsRepository.save(appointment);
+
+        rabbitService.createHistory(createHistory(appointment));
+
         return new ResponseTimeAppointment(appointment.getFrom());
     }
 
+
     @Transactional
     public void deleteBookingFromAppointments(long id, String token) {
-        isAdminOrManager(token);
-        // Сделать отправку через раббит токена для получения ид пользователя
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
-        appointment.setFree(true);
-        appointmentsRepository.save(appointment);
+        Long userIdFromToken = rabbitService.sendTokenForGetUserId(token);
+
+
+        if (userIdFromToken.equals(appointment.getUserId())) {
+            appointment.setIsFree(true);
+            appointmentsRepository.save(appointment);
+        } else if (isAdminOrManager(token)) {
+            appointment.setIsFree(true);
+            appointmentsRepository.save(appointment);
+        } else {
+            throw new RuntimeException("Delete booking failed");
+        }
     }
 
     public List<Timetable> getTimetableForDoctorByIdAndRoom(long id, String room, String from, String to) {
@@ -125,12 +170,42 @@ public class TimeTableService {
         return timeTable;
     }
 
-    private void isAdminOrManager(String token) {
+    private Boolean isAdminOrManager(String token) {
         if (jwtUtil.getRolesFromToken(token).contains(Role.ADMIN.toString())
                 || jwtUtil.getRolesFromToken(token).contains(Role.MANAGER.toString())) {
-            return;
+            return true;
         } else {
             throw new RuntimeException("Admin only");
         }
+    }
+
+    private void checkDoctor(Long doctorId) {
+        try {
+            rabbitService.checkDoctor(doctorId);
+        } catch (Exception e) {
+            throw new RuntimeException("Account not found");
+        }
+    }
+
+    private void checkHospitalAndRoom(Long hospitalId, String room) {
+        try {
+            rabbitService.checkHospitalAndRoom(new RabbitRequest(hospitalId, room));
+        } catch (Exception e) {
+            throw new RuntimeException("Account not found");
+        }
+    }
+
+    private RabbitCreateHistory createHistory(Appointment appointment) {
+        RabbitCreateHistory history = new RabbitCreateHistory();
+
+        Timetable timetable = timeTableRepository.findTimetableByAppointmentsContains(appointment);
+
+        history.setDate(appointment.getFrom());
+        history.setRoom(timetable.getRoom());
+        history.setDoctorId(timetable.getDoctorId());
+        history.setHospitalId(timetable.getHospitalId());
+        history.setPacientId(appointment.getUserId());
+
+        return history;
     }
 }

@@ -86,8 +86,9 @@ public class TimetableController {
     }
 
     @PostMapping("/{id}/Appointments")
-    public ResponseTimeAppointment broneAppointments(@PathVariable Long id) {
-        return timeTableService.bookingAppointments(id);
+    public ResponseTimeAppointment broneAppointments(@PathVariable Long id,
+                                                     @RequestHeader(name = "Authorization") String token) {
+        return timeTableService.bookingAppointments(id, token);
     }
 
     //admin moder usbrone
@@ -96,13 +97,5 @@ public class TimetableController {
     public void deleteAppointment(@PathVariable long id,
                                   @RequestHeader(name = "Authorization") String token) {
         timeTableService.deleteBookingFromAppointments(id, token);
-    }
-
-    @GetMapping("/rabbit")
-    public boolean te() {
-        if (rabbitMQPublisherService.sendTokenForGetUserId("asdasdasddsadassaddasasddas") == 1) {
-            return true;
-        }
-        return false;
     }
 }

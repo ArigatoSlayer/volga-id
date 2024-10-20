@@ -1,9 +1,9 @@
 server:
-  port: 8081
+  port: 8083
 
 spring:
   datasource:
-    url: jdbc:postgresql://authenticationdb:5432/authentication
+    url: jdbc:postgresql://timetabledb:5434/timetable
     driver-class-name: org.postgresql.Driver
     username: admin
     password: password
@@ -11,21 +11,21 @@ spring:
     hibernate:
       ddl-auto: create
   application:
-    name: authentication
+    name: timetable
   rabbitmq:
     host: rabbitmq
     port: 5672
+
+springdoc:
+  api-docs:
+    path: /api/timetable/v3/api-docs
+  swagger-ui:
+    path: /api/timetable/swagger-ui.html
 
 eureka:
   client:
     service-url:
       defaultZone: http://eureka:8761/eureka
-
-springdoc:
-  api-docs:
-    path: /api/authentication/v3/api-docs
-  swagger-ui:
-    path: /api/authentication/swagger-ui.html
 
 jwt:
   secret: "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4"

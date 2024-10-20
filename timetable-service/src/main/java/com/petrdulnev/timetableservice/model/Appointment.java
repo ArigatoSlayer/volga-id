@@ -19,7 +19,7 @@ public class Appointment {
     private LocalDateTime from;
     @Column(name = "end_time")
     private LocalDateTime to;
-    private long userId;
+    private Long userId;
     @Builder.Default
-    private boolean isFree = true;
+    private Boolean isFree = true;
 }

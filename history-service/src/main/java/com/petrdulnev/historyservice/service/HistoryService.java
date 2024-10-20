@@ -2,6 +2,7 @@ package com.petrdulnev.historyservice.service;
 
 import com.petrdulnev.historyservice.jwt.JwtUtil;
 import com.petrdulnev.historyservice.model.History;
+import com.petrdulnev.historyservice.model.RabbitCreateHistory;
 import com.petrdulnev.historyservice.model.Role;
 import com.petrdulnev.historyservice.repository.HistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,17 @@ public class HistoryService {
         } else {
             throw new RuntimeException("Doctor only");
         }
+    }
+
+    public void saveHistory(RabbitCreateHistory historyRequest) {
+
+        History history = new History();
+        history.setPacientId(historyRequest.getPacientId());
+        history.setDate(historyRequest.getDate());
+        history.setRoom(historyRequest.getRoom());
+        history.setDoctorId(historyRequest.getDoctorId());
+        history.setHospitalId(historyRequest.getHospitalId());
+
+        historyRepository.save(history);
     }
 }

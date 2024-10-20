@@ -20,8 +20,8 @@ public class Timetable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int hospitalId;
-    private int doctorId;
+    private Long hospitalId;
+    private Long doctorId;
     @Column(name = "start_time")
     private LocalDateTime from;
     @Column(name = "end_time")

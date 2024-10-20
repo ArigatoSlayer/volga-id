@@ -22,12 +22,6 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.token.refresh.expiration}")
-    private String refreshTokenExpiration;
-
-    @Value("${jwt.token.access.expiration}")
-    private String accessTokenExpiration;
-
     private Key key;
 
     public String generateToken(Account user) {
@@ -54,7 +48,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String getUserNameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         return getClaimsFromToken(token).getSubject();
     }
 
@@ -66,7 +60,8 @@ public class JwtService {
     public Claims getClaimsFromToken(String token) {
         if (token.contains("Bearer ")) {
             token = token.replace("Bearer ", "");
-        }        JwtParser parser = Jwts.parser().verifyWith((SecretKey) key).build();
+        }
+        JwtParser parser = Jwts.parser().verifyWith((SecretKey) key).build();
         return (Claims) parser.parse(token).getPayload();
     }
 

@@ -134,13 +134,13 @@ public class AccountService {
     }
 
     public Account getMyAccount(String token) {
-        String accountUsername = jwtService.getUserNameFromToken(token);
+        String accountUsername = jwtService.getUsernameFromToken(token);
         return getAccountByUsername(accountUsername);
     }
 
     @Transactional
     public Account update(String token, AccountUpdateDto account) {
-        Account oldAccount = getAccountByUsername(jwtService.getUserNameFromToken(token));
+        Account oldAccount = getAccountByUsername(jwtService.getUsernameFromToken(token));
 
         if (account.getFirstName() != null) {
             oldAccount.setFirstName(account.getFirstName());

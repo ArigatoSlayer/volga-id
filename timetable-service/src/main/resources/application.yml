@@ -13,13 +13,12 @@ spring:
   application:
     name: timetable
   rabbitmq:
+    host: 127.0.0.1
     port: 5672
-    password: guest
-    username: guest
 
 springdoc:
   api-docs:
-    path: /api/hospital/v3/api-docs
+    path: /api/timetable/v3/api-docs
   swagger-ui:
     path: /api/timetable/swagger-ui.html
 
@@ -30,8 +29,3 @@ eureka:
 
 jwt:
   secret: "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4"
-  token:
-    access:
-      expiration: "86400"
-    refresh:
-      expiration: "604800"

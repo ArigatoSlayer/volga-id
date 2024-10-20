@@ -28,6 +28,16 @@ services:
       - POSTGRES_PASSWORD=password
       - PGPORT=5434
 
+  historydb:
+    image: postgres:latest
+    ports:
+      - "5435:5435"
+    environment:
+      - POSTGRES_DB=history
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - PGPORT=5435
+
   eureka:
     build:
       context: eureka-server/
@@ -39,7 +49,7 @@ services:
 
   gateway:
     build:
-      context: gateway-service/
+      context: gateway-server/
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -61,8 +71,50 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
 
-  rabbitmq:
-    image: rabbitmq:3-management
+  hospital:
+    build:
+      context: hospital-service/
+      dockerfile: Dockerfile
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "8082:8082"
+    depends_on:
+      - rabbitmq
+      - eureka
+      - hospitaldb
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  timetable:
+    build:
+      context: timetable-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - rabbitmq
+      - eureka
+      - timetabledb
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  history:
+    build:
+      context: history-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    depends_on:
+      - rabbitmq
+      - eureka
+      - historydb
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+
+
+  rabbitmq:
+    image: rabbitmq:3.9.8-management-alpine
+    hostname: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"

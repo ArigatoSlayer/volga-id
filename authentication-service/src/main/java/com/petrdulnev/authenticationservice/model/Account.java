@@ -22,7 +22,7 @@ public class Account {
     private String firstName;
     private String lastName;
     private String refreshToken;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Role> authorities;
     @ColumnDefault("false")

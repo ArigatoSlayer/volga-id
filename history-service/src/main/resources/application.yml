@@ -1,9 +1,9 @@
 server:
-  port: 8084
+  port: 8086
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/history
+    url: jdbc:postgresql://localhost:5435/history
     driver-class-name: org.postgresql.Driver
     username: admin
     password: password

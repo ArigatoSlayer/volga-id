@@ -22,7 +22,7 @@ public class TimetableController {
     @PostMapping
     public Timetable createTimeTable(@RequestBody @Valid Timetable timeTable,
                                      @RequestHeader(name = "Authorization") String token
-    ) {
+    ) throws InterruptedException {
         return timeTableService.saveTimetable(timeTable, token);
     }
 
@@ -30,7 +30,7 @@ public class TimetableController {
     public Timetable updateTimetable(@RequestBody Timetable timeTable,
                                      @PathVariable long id,
                                      @RequestHeader(name = "Authorization") String token
-    ) {
+    ) throws InterruptedException {
         return timeTableService.updateTimetable(timeTable, id, token);
     }
 
@@ -87,7 +87,7 @@ public class TimetableController {
 
     @PostMapping("/{id}/Appointments")
     public ResponseTimeAppointment broneAppointments(@PathVariable Long id,
-                                                     @RequestHeader(name = "Authorization") String token) {
+                                                     @RequestHeader(name = "Authorization") String token) throws InterruptedException {
         return timeTableService.bookingAppointments(id, token);
     }
 
@@ -95,7 +95,7 @@ public class TimetableController {
 
     @DeleteMapping("/Appointment/{id}")
     public void deleteAppointment(@PathVariable long id,
-                                  @RequestHeader(name = "Authorization") String token) {
+                                  @RequestHeader(name = "Authorization") String token) throws InterruptedException {
         timeTableService.deleteBookingFromAppointments(id, token);
     }
 }

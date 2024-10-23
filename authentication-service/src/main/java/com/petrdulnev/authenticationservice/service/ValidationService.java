@@ -1,8 +1,8 @@
 package com.petrdulnev.authenticationservice.service;
 
+import com.petrdulnev.authenticationservice.configuration.RabbitConfiguration;
 import com.petrdulnev.authenticationservice.model.Account;
 import com.petrdulnev.authenticationservice.model.Role;
-import com.petrdulnev.authenticationservice.rabbit.RabbitConfiguration;
 import com.petrdulnev.authenticationservice.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,10 +24,13 @@ public class ValidationService {
     }
 
     @RabbitListener(queues = RabbitConfiguration.CHECK_DOCTOR)
-    public Boolean checkDoctor(Long id) {
+    public String checkDoctor(Long id) {
         Account account = repository.findById(id).orElse(null);
-
-        return account != null && account.getAuthorities().contains(Role.DOCTOR);
+        if (account != null && account.getAuthorities().contains(Role.DOCTOR)) {
+            return "true";
+        } else {
+            return "false";
+        }
     }
 
     @RabbitListener(queues = RabbitConfiguration.CHECK_ACCOUNT)

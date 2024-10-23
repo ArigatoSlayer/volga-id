@@ -5,12 +5,12 @@ import com.petrdulnev.timetableservice.model.Appointment;
 import com.petrdulnev.timetableservice.model.Role;
 import com.petrdulnev.timetableservice.model.Timetable;
 import com.petrdulnev.timetableservice.model.dto.RabbitCreateHistory;
-import com.petrdulnev.timetableservice.model.dto.RabbitRequest;
 import com.petrdulnev.timetableservice.model.dto.ResponseTimeAppointment;
 import com.petrdulnev.timetableservice.rabbit.RabbitMQPublisherService;
 import com.petrdulnev.timetableservice.repository.AppointmentsRepository;
 import com.petrdulnev.timetableservice.repository.TimeTableRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TimeTableService {
 
     private final TimeTableRepository timeTableRepository;
@@ -28,32 +29,34 @@ public class TimeTableService {
     private final RabbitMQPublisherService rabbitService;
 
     @Transactional
-    public Timetable saveTimetable(Timetable timetable, String token) {
+    public Timetable saveTimetable(Timetable timetable, String token) throws InterruptedException {
         isAdminOrManager(token);
-        checkDoctor(timetable.getDoctorId());
-        checkHospitalAndRoom(timetable.getHospitalId(), timetable.getRoom());
+        Boolean isDoctor = rabbitService.checkDoctor(timetable.getDoctorId());
+        Boolean isValidHospital = rabbitService.checkHospitalAndRoom(timetable.getHospitalId() + "," + timetable.getRoom());
+        if (isValidHospital && isDoctor) {
+            return timeTableRepository.save(createTimeTableWithAppointments(timetable));
+        } else {
+            throw new RuntimeException("Can't save timetable because hospital or doctor doesn't exist");
+        }
 
-        return timeTableRepository.save(createTimeTableWithAppointments(timetable));
     }
 
     @Transactional
-    public Timetable updateTimetable(Timetable timetable, long id, String token) {
+    public Timetable updateTimetable(Timetable timetable, long id, String token) throws InterruptedException {
         isAdminOrManager(token);
-        checkDoctor(timetable.getDoctorId());
-        checkHospitalAndRoom(timetable.getHospitalId(), timetable.getRoom());
+        Boolean isDoctor = rabbitService.checkDoctor(timetable.getDoctorId());
+        Boolean isValidHospital = rabbitService.checkHospitalAndRoom(timetable.getHospitalId() + "," + timetable.getRoom());
 
         Timetable timetableOld = timeTableRepository.findById(id).orElseThrow();
 
-        if (timetable.getFrom() != null) {
-            timetableOld.setFrom(timetable.getFrom());
-        } else if (timetable.getTo() != null) {
-            timetableOld.setTo(timetable.getTo());
-        } else if (timetable.getDoctorId() != null) {
-            timetableOld.setDoctorId(timetable.getDoctorId());
-        } else if (timetable.getRoom() != null) {
-            timetableOld.setRoom(timetable.getRoom());
-        } else if (timetable.getHospitalId() != null) {
-            timetableOld.setHospitalId(timetable.getHospitalId());
+        if (isValidHospital && isDoctor) {
+            if (timetable.getDoctorId() != null) {
+                timetableOld.setDoctorId(timetable.getDoctorId());
+            } else if (timetable.getRoom() != null) {
+                timetableOld.setRoom(timetable.getRoom());
+            }
+        } else {
+            throw new RuntimeException("Can't update timetable because hospital or doctor doesn't exist");
         }
 
         return timetableOld;
@@ -100,7 +103,7 @@ public class TimeTableService {
     }
 
     @Transactional
-    public ResponseTimeAppointment bookingAppointments(Long id, String token) {
+    public ResponseTimeAppointment bookingAppointments(Long id, String token) throws InterruptedException {
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
 
         Long accountId = rabbitService.sendTokenForGetUserId(token);
@@ -117,7 +120,7 @@ public class TimeTableService {
 
 
     @Transactional
-    public void deleteBookingFromAppointments(long id, String token) {
+    public void deleteBookingFromAppointments(long id, String token) throws InterruptedException {
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
         Long userIdFromToken = rabbitService.sendTokenForGetUserId(token);
 
@@ -176,22 +179,6 @@ public class TimeTableService {
             return true;
         } else {
             throw new RuntimeException("Admin only");
-        }
-    }
-
-    private void checkDoctor(Long doctorId) {
-        try {
-            rabbitService.checkDoctor(doctorId);
-        } catch (Exception e) {
-            throw new RuntimeException("Account not found");
-        }
-    }
-
-    private void checkHospitalAndRoom(Long hospitalId, String room) {
-        try {
-            rabbitService.checkHospitalAndRoom(new RabbitRequest(hospitalId, room));
-        } catch (Exception e) {
-            throw new RuntimeException("Account not found");
         }
     }
 

@@ -1,7 +1,10 @@
 package com.petrdulnev.hospitalservice.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.HashSet;
@@ -19,7 +22,7 @@ public class Hospital {
     private String name;
     private String address;
     private String contactPhone;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> rooms = new HashSet<>();
     @ColumnDefault("false")
     private Boolean deleted;

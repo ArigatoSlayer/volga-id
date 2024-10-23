@@ -110,8 +110,6 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
 
-
-
   rabbitmq:
     image: rabbitmq:3.9.8-management-alpine
     hostname: rabbit

@@ -27,7 +27,7 @@ public class HospitalService {
     @Transactional
     public Hospital save(Hospital hospital, String token) {
         isAdmin(token);
-
+        hospital.setDeleted(false);
         return hospitalRepository.save(hospital);
     }
 

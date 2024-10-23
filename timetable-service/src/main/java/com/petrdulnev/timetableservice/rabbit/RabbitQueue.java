@@ -4,7 +4,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 public class RabbitQueue {
     //Queue acc
-    public static final String CHECK_ACCOUNT = "CHECK_ACCOUNT";
     public static final String GET_ID_FROM_TOKEN = "GET_ID_FROM_TOKEN";
     public static final String CHECK_DOCTOR = "CHECK_DOCTOR";
 
@@ -12,7 +11,8 @@ public class RabbitQueue {
     public static final String CHECK_HOSPITAL_AND_ROOM = "CHECK_HOSPITAL_AND_ROOM";
 
     //Queue History
-    public static final String CREATE_HOSPITAL = "CREATE_HOSPITAL";
+    public static final String CREATE_HISTORY = "CREATE_HISTORY";
+
 
     // for rabbit connection
     @RabbitListener(queues = "GET_ID_FROM_TOKEN")

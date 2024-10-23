@@ -33,13 +33,11 @@ public class HistoryService {
 
     public List<History> getByAccountId(Long id, String token) {
         onlyDoctor(token);
-        // проверка что пользовотель котоырй в токене
         return historyRepository.findByPacientId(id);
     }
 
     public History getById(Long id, String token) {
         onlyDoctor(token);
-        // проверка что пользовотель котоырй в токене
         return historyRepository.findById(id).orElseThrow();
     }
 
